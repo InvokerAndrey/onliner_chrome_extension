@@ -1,0 +1,26 @@
+{
+    "name": "True price",
+    "description": "Show onliner average price on products",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["storage"],
+    "action": {
+      "default_icon": {
+        "16": "/images/roflanebalo.png",
+        "32": "/images/roflanebalo.png",
+        "48": "/images/roflanebalo.png",
+        "128": "/images/roflanebalo.png"
+      }
+    },
+    "icons": {
+      "16": "/images/roflanebalo.png",
+      "32": "/images/roflanebalo.png",
+      "48": "/images/roflanebalo.png",
+      "128": "/images/roflanebalo.png"
+    },
+    "content_scripts": [{
+        "css": ["styles.css"],
+        "js": ["content.js"],
+        "matches": ["https://catalog.onliner.by/*"]
+    }]
+  }
