@@ -1,5 +1,5 @@
 window.onload = (event) => {
-    console.log('True price injected')
+    console.log('True price injected!!')
 
     let priceDivs = document.getElementsByClassName('schema-product__price');
 
@@ -15,6 +15,7 @@ window.onload = (event) => {
             let elem = document.createElement('span');
             elem.innerHTML = '| Средняя цена: ' + price
             priceDivs[i].appendChild(elem)
+            console.log(elem.innerHTML)
         }
     }
 };

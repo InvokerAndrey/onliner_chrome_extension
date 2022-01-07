@@ -22,5 +22,8 @@
         "css": ["styles.css"],
         "js": ["content.js"],
         "matches": ["https://catalog.onliner.by/*"]
-    }]
+    }],
+    "background.service_worker": {
+      "persistent": false
+    }
   }
