@@ -19,9 +19,10 @@
       "128": "/images/roflanebalo.png"
     },
     "content_scripts": [{
-        "css": ["styles.css"],
-        "js": ["content.js"],
-        "matches": ["https://catalog.onliner.by/*"]
+      "run_at": "document_end",
+      "css": ["styles.css"],
+      "js": ["content.js"],
+      "matches": ["https://catalog.onliner.by/*"]
     }],
     "background.service_worker": {
       "persistent": false
