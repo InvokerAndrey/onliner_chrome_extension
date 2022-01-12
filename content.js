@@ -14,6 +14,7 @@ function getMedianOfPrices(prices) {
     return (prices[half - 1] + prices[half]) / 2.0;
 }
 
+
 const average = array => array.reduce((a,b) => a + b, 0) / array.length;
 
 
@@ -55,6 +56,9 @@ function displayPrices() {
             for (let k in data.products) {
                 if (data.products.hasOwnProperty(k)) {
                     keys.push(data.products[k].key);
+                    for (let j = 0; j < data.products[k].children.length; j++) {
+                        keys.push(data.products[k].children[j].key)
+                    }
                 }
             }
             return keys
@@ -100,8 +104,8 @@ function displayPrices() {
                     try {
                         average_price = prettyAvgs[_id].avg;
                         median_price = prettyAvgs[_id].median;
-                        createSpan(priceDivs[i], 'Средняя: ' + average_price + ' р.');
-                        createSpan(priceDivs[i], 'По медиане: ' + median_price + ' р.');
+                        createSpan(priceDivs[i], `Средняя: ${average_price} р.`);
+                        createSpan(priceDivs[i], `По медиане: ${median_price} р.`);
                     } catch {
                         continue;
                     }
