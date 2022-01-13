@@ -45,10 +45,22 @@ function prettifyAvgs(avgs) {
 
 
 function displayPrices() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const page = urlParams.get('page');
-    const product_type = window.location.pathname
-    const getProductsURL = `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?group=1&page=${page || 1}`;
+    const href_split = window.location.href.split('?');
+    const pathname_split = window.location.pathname.split('/');
+    let url_params = '';
+    let product_type = '';
+    if (href_split.length >= 2) {
+        url_params = href_split.at(-1)
+    } else {
+        url_params = window.location.href.split('?').at(-1);
+    }
+    if (pathname_split.length === 3) {
+        product_type = pathname_split.at(-2)
+    } else {
+        product_type = window.location.pathname
+    }
+    // const getProductsURL = `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?group=1&page=${page || 1}`;
+    const getProductsURL = `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?${url_params}&group=1`;
     sendRequest(getProductsURL)
         .then(data => {
             keys = []
@@ -115,34 +127,15 @@ function displayPrices() {
 }
 
 
-// window.onload = (event) => {
-//     console.log('True price injected!');
-//     // displayPrices()
-//     let observer = new MutationObserver(displayPrices);
-
-//     observer.observe(document, {
-//         attributes: true,
-//         characterData: true,
-//         childList: true,
-//         subtree: true
-//       })
-// }
-
-
-function asd() {
-    console.log('Date: ', Date.now())
+window.onload = (event) => {
+    console.log('True price injected!');
+    displayPrices();
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        lastUrl = url;
+        displayPrices();
+      }
+    }).observe(document, {subtree: true, childList: true});
 }
-
-
-console.log('True price injected!');
-// displayPrices()
-let observer = new MutationObserver(asd);
-
-observer.observe(document.getElementsByClassName('js-schema-results schema-grid__center-column')[0], {
-    attributes: true,
-    characterData: true,
-    childList: true,
-    subtree: true
-  })
-
-  document.getElementsByClassName('schema-product__group')
