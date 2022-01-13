@@ -2,14 +2,13 @@ function getMedianOfPrices(prices) {
     if (!prices) return null;
     if(prices.length === 0) return 0;
 
-    prices.sort(function(a,b){
-        return a-b;
+    prices.sort((a,b) => {
+        return a - b;
     });
 
     let half = Math.floor(prices.length / 2);
     
-    if (prices.length % 2)
-        return prices[half];
+    if (prices.length % 2) return prices[half];
 
     return (prices[half - 1] + prices[half]) / 2.0;
 }
@@ -56,9 +55,9 @@ function displayPrices() {
             for (let k in data.products) {
                 if (data.products.hasOwnProperty(k)) {
                     keys.push(data.products[k].key);
-                    for (let j = 0; j < data.products[k].children.length; j++) {
-                        keys.push(data.products[k].children[j].key)
-                    }
+                    // for (let j = 0; j < data.products[k].children.length; j++) {
+                    //     keys.push(data.products[k].children[j].key)
+                    // }
                 }
             }
             return keys
@@ -116,7 +115,34 @@ function displayPrices() {
 }
 
 
-window.onload = (event) => {
-    console.log('True price injected!');
-    displayPrices()
+// window.onload = (event) => {
+//     console.log('True price injected!');
+//     // displayPrices()
+//     let observer = new MutationObserver(displayPrices);
+
+//     observer.observe(document, {
+//         attributes: true,
+//         characterData: true,
+//         childList: true,
+//         subtree: true
+//       })
+// }
+
+
+function asd() {
+    console.log('Date: ', Date.now())
 }
+
+
+console.log('True price injected!');
+// displayPrices()
+let observer = new MutationObserver(asd);
+
+observer.observe(document.getElementsByClassName('js-schema-results schema-grid__center-column')[0], {
+    attributes: true,
+    characterData: true,
+    childList: true,
+    subtree: true
+  })
+
+  document.getElementsByClassName('schema-product__group')
