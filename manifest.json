@@ -5,6 +5,7 @@
     "manifest_version": 3,
     "permissions": ["storage"],
     "action": {
+      "default_popup": "extension/build/index.html",
       "default_icon": {
         "16": "/images/roflanebalo.png",
         "32": "/images/roflanebalo.png",
@@ -20,8 +21,7 @@
     },
     "content_scripts": [{
       "run_at": "document_end",
-      "css": ["styles.css"],
-      "js": ["content.js"],
+      "js": ["extension/src/content.js"],
       "matches": ["https://catalog.onliner.by/*"]
     }],
     "background.service_worker": {
