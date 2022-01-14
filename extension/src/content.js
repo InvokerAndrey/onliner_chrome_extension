@@ -43,10 +43,11 @@ function prettifyAvgs(avgs) {
     }
     return objs
 }
-
+// .replace(/ *\[[^\]]*]/, '').replace('?', '').replace('shops', '').replace('=', '');
 
 function getProductsURL() {
-    const href_split = window.location.href.split('?');
+    const href = decodeURI(window.location.href)
+    const href_split = href.split('?');
     const pathname_split = window.location.pathname.split('/');
     let url_params = '';
     let product_type = '';
@@ -62,6 +63,24 @@ function getProductsURL() {
         product_type = window.location.pathname
     }
     return `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?${url_params}&group=1`
+}
+
+
+function getShopsFromURL() {
+    const strParams = decodeURI(window.location.search)
+    if (!strParams) return [];
+    let shops = [];
+    params = strParams.split('&')
+    for (let i = 0; i < params.length; i++) {
+        if (params[i].includes('shops')) {
+            let shop = params[i].replace(/ *\[[^\]]*]/, '').replace('?', '').replace('shops', '').replace('=', '');
+            shop = Number(shop)
+            if (shop) {
+                shops.push(shop)
+            }
+        }
+    }
+    return shops
 }
 
 
@@ -100,6 +119,7 @@ function changeCurrency(currency) {
 function displayPrices() {
     const products_url = getProductsURL()
     console.log('Making products request:', products_url)
+    const shops = getShopsFromURL();
     sendRequest(products_url)
         .then(data => {
             keys = []
@@ -126,10 +146,20 @@ function displayPrices() {
                         let json_response = data.positions.primary
                         for (let k in json_response) {
                             if (json_response.hasOwnProperty(k)) {
-                                prices.push(Number(json_response[k].position_price.amount))
-                                product_id = json_response[k].product_url.split('/').pop()
+                                if (shops.length > 0) {
+                                    shop_id = json_response[k].shop_id;
+                                    if (shops.includes(shop_id)) {
+                                        prices.push(Number(json_response[k].position_price.amount))
+                                        product_id = json_response[k].product_url.split('/').pop()
+                                    }
+                                } else {
+                                    console.log('IGNORING SHOPS')
+                                    prices.push(Number(json_response[k].position_price.amount))
+                                    product_id = json_response[k].product_url.split('/').pop()
+                                }
                             }
                         }
+                        console.log('PRICES:', prices)
                         return {
                             "_id": product_id,
                             "avg": average(prices).toFixed(2),
@@ -167,6 +197,8 @@ function displayPrices() {
 
 window.onload = (event) => {
     console.log('True price injected!');
+    let shops = getShopsFromURL()
+    console.log('SHOPS:', shops);
     displayPrices();
     let lastUrl = location.href;
     new MutationObserver(() => {
