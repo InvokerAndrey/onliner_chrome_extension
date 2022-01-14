@@ -44,7 +44,7 @@ function prettifyAvgs(avgs) {
 }
 
 
-function displayPrices() {
+function getProductsURL() {
     const href_split = window.location.href.split('?');
     const pathname_split = window.location.pathname.split('/');
     let url_params = '';
@@ -52,20 +52,26 @@ function displayPrices() {
     if (href_split.length >= 2) {
         url_params = href_split.at(-1)
     } else {
-        url_params = window.location.href.split('?').at(-1);
+        url_params = ""
     }
     if (pathname_split.length === 3) {
-        product_type = pathname_split.at(-2)
+        product_type = "/" + pathname_split.at(-2)
+        url_params = "mfr[0]=" + pathname_split.at(-1)
     } else {
         product_type = window.location.pathname
     }
-    // const getProductsURL = `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?group=1&page=${page || 1}`;
-    const getProductsURL = `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?${url_params}&group=1`;
-    sendRequest(getProductsURL)
+    return `https://catalog.onliner.by/sdapi/catalog.api/search${product_type}?${url_params}&group=1`
+}
+
+
+function displayPrices() {
+    const products_url = getProductsURL()
+    console.log('Making products request:', products_url)
+    sendRequest(products_url)
         .then(data => {
             keys = []
             for (let k in data.products) {
-                if (data.products.hasOwnProperty(k)) {
+                if (data.products.hasOwnProperty(k) && data.products[k].prices) {
                     keys.push(data.products[k].key);
                     // for (let j = 0; j < data.products[k].children.length; j++) {
                     //     keys.push(data.products[k].children[j].key)
@@ -80,6 +86,7 @@ function displayPrices() {
             let product_id = null
             for (let i = 0; i < keys.length; i++) {
                 url = "https://catalog.onliner.by/sdapi/shop.api/products/" + keys[i] + "/positions?town=all&has_prime_delivery=1&town_id=17030"
+                console.log('Making prices request:', url)
                 avgs.push(sendRequest(url)
                     .then(data => {
                         let prices = []
@@ -111,15 +118,13 @@ function displayPrices() {
                     }
                 }
                 if (price) {
-                    _id = priceDivs[i].getElementsByTagName('a')[0].href.replace('/prices', '').split('/').pop()
                     try {
+                        _id = priceDivs[i].getElementsByTagName('a')[0].href.replace('/prices', '').split('/').pop()
                         average_price = prettyAvgs[_id].avg;
                         median_price = prettyAvgs[_id].median;
                         createSpan(priceDivs[i], `Средняя: ${average_price} р.`);
                         createSpan(priceDivs[i], `По медиане: ${median_price} р.`);
-                    } catch {
-                        continue;
-                    }
+                    } catch {}
                 }
             }
         })
