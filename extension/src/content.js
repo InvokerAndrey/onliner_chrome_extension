@@ -211,10 +211,16 @@ window.onload = (event) => {
 }
 
 
+// chrome.runtime.onMessage.addListener((message) => {
+//     console.log('MSG:', message.url)
+// })
+
+
 const messagesFromReactAppListener = (message) => {
     console.log('msg:', message.message)
     changeCurrency(message.message);
 }
+
 
 const main = () => {
     console.log('[content.js] Main')
