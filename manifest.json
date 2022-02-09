@@ -3,7 +3,14 @@
     "description": "Show onliner average price on products",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["storage"],
+    "permissions": [
+      "tabs",
+      "webRequest",
+      "storage"
+    ],
+    "host_permissions": [
+      "https://catalog.onliner.by/*"
+    ],
     "action": {
       "default_popup": "extension/build/index.html",
       "default_icon": {
@@ -24,7 +31,23 @@
       "js": ["extension/src/content.js"],
       "matches": ["https://catalog.onliner.by/*"]
     }],
-    "background.service_worker": {
-      "persistent": false
+    "background": {
+      "service_worker": "extension/src/background.js"
+    },
+    "commands": {
+      "run-message": {
+        "suggested_key": {
+          "default": "Alt+Q"
+        },
+        "description": "Changes currency"
+      },
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Alt+Q",
+          "windows": "Alt+Q",
+          "chromeos": "Alt+Q",
+          "linux": "Alt+Q"
+        }
+      }
     }
   }
