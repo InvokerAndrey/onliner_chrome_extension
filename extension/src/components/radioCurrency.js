@@ -1,6 +1,6 @@
 /*global chrome*/
 import React, { useState } from 'react'
-import { ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup, Button, ButtonGroup } from 'react-bootstrap';
 
 
 function RadioCurrency() {
@@ -45,13 +45,18 @@ function RadioCurrency() {
 
 
     return (
-        <div>
-            <ToggleButtonGroup type="radio" name="value" value={value} onChange={handleChange}>
-                <ToggleButton value={1}>BYN</ToggleButton>
+        <ButtonGroup style={{paddingTop: '10px'}} className="btn-group-vertical">
+            <ToggleButtonGroup
+                type="radio"
+                name="value"
+                value={value}
+                onChange={handleChange}
+            >
+                <ToggleButton value={1}>BYN</ToggleButton> <br />
                 <ToggleButton value={2}>USD</ToggleButton>
             </ToggleButtonGroup>
-            <Button variant="primary" onClick={sendCurrency}>Switch</Button>
-        </div>
+            <Button onClick={sendCurrency} style={{margin: '10px'}}>Switch</Button>
+        </ButtonGroup>
     )
 }
 

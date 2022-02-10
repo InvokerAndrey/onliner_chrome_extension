@@ -44,14 +44,19 @@ chrome.commands.onCommand.addListener((command) => {
 })
 
 
-chrome.contextMenus.create(
-    {
-        id: "context id",
-        type: "normal",
-        title: "Delete this item from page",
-        contexts: ["link"]
-    }
-)
+{
+    let contextId = 0;
+
+    chrome.contextMenus.create(
+        {
+            id: (++contextId).toString(),
+            type: "normal",
+            title: "Delete this item from page",
+            contexts: ["link"]
+        }
+    )
+}
+
 
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
