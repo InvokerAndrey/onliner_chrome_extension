@@ -6,7 +6,8 @@
     "permissions": [
       "tabs",
       "webRequest",
-      "storage"
+      "storage",
+      "contextMenus"
     ],
     "host_permissions": [
       "https://catalog.onliner.by/*"

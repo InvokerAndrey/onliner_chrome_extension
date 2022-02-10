@@ -1,17 +1,3 @@
-/* TODO 
-    chrome.commands - bind keyboard keys to switch currency
-    chrome.contentSettings - block cookies and etc.
-
-    maybe do chrome.contextMenus to show prices of mini-phones selectively
-
-    maybe chrome.desctopCapture to take screenshots of a webpage
-
-    mb chrome.download could download useful info from a page to local file
-
-    chrome.fontSettings to change font
-*/
-
-
 function getMedianOfPrices(prices) {
     if (!prices) return null;
     if(prices.length === 0) return 0;
@@ -246,3 +232,22 @@ chrome.runtime.onMessage.addListener((message) => {
         }
     }
 });
+
+
+function deleteItemFromPage(href) {
+    let mainDivs = document.getElementsByClassName('schema-product__group')
+    console.log('Finding')
+    for (let i = 0; i < mainDivs.length; i++) {
+        if (mainDivs[i].querySelectorAll(`a[href='${href}']`).length > 0) {
+            console.log('Found')
+            mainDivs[i].remove()
+            break;
+        }
+    }
+}
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.delete) {
+        deleteItemFromPage(message.delete)
+    }
+})

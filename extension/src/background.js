@@ -42,3 +42,22 @@ chrome.commands.onCommand.addListener((command) => {
         return true
     });
 })
+
+
+chrome.contextMenus.create(
+    {
+        id: "context id",
+        type: "normal",
+        title: "Delete this item from page",
+        contexts: ["link"]
+    }
+)
+
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+    console.log(info)
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        chrome.tabs.sendMessage(tabs[0].id, {delete: info.linkUrl});
+        return true
+    });
+})
