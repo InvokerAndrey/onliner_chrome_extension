@@ -2,7 +2,7 @@ function getMedianOfPrices(prices) {
     if (!prices) return null;
     if(prices.length === 0) return 0;
 
-    prices.sort((a,b) => {
+    prices.sort((a, b) => {
         return a - b;
     });
 
@@ -14,7 +14,9 @@ function getMedianOfPrices(prices) {
 }
 
 
-const average = array => array.reduce((a,b) => a + b, 0) / array.length;
+function getAverageOfPrices(prices) {
+    return prices.reduce((a, b) => a + b, 0) / prices.length;
+}
 
 
 function sendRequest(url) {
@@ -63,51 +65,61 @@ function getShopsFromURL() {
 }
 
 
-function toUSD(price, exchange_rate) {
+function toUSD(price, exchangeRate) {
     price = price.replace('р.', '').replace(',', '.')
     price = parseFloat(price);
-    price = price / exchange_rate
+    price = price / exchangeRate
     return price.toFixed(2)
 }
 
 
-function toBYN(price, exchange_rate) {
+function toBYN(price, exchangeRate) {
     price = price.replace('$', '')
     price = parseFloat(price)
-    price = price * exchange_rate
+    price = price * exchangeRate
     return price.toFixed(2)
+}
+
+
+function rewritePrices(span, innerTextMinPrice, innerTextAvgPrice, innerTextMedianPrice) {
+    if (span.getAttribute('data-bind') == "html: $root.format.minPrice($data.prices, 'BYN')") {
+        span.innerText = innerTextMinPrice;
+    }
+    if (span.className == 'average_price') {
+        span.innerText = innerTextAvgPrice;
+    } else if (span.className == 'median_price') {
+        span.innerText = innerTextMedianPrice;
+    }
 }
 
 
 function changeCurrency(currency) {
-    const exchange_rate = parseFloat(document.getElementsByClassName('_u js-currency-amount')[0].innerText.replace('$ ', '').replace(',', '.'))
+    const exchangeRate = parseFloat(document.getElementsByClassName('_u js-currency-amount')[0].innerText.replace('$ ', '').replace(',', '.'))
     let priceDivs = document.getElementsByClassName('schema-product__price');
+
+    let innerTextMinPrice = '';
+    let innerTextAvgPrice = '';
+    let innerTextMedianPrice = '';
+
         
     for (let i = 0; i < priceDivs.length; i++) {
         let spans = priceDivs[i].getElementsByTagName('span');
         for (let j = 0; j < spans.length; j++) {
             if (currency == 2) {
-                if (spans[j].innerText.includes('$')) return;
-                if (spans[j].getAttribute('data-bind') == "html: $root.format.minPrice($data.prices, 'BYN')") {
-                    spans[j].innerText = `$${toUSD(spans[j].innerText, exchange_rate)}`;
-                }
-                if (spans[j].className == 'average_price') {
-                    spans[j].innerText = `Средняя: $${toUSD(spans[j].innerText.replace('Средняя: ', ''), exchange_rate)}`;
-                } else if (spans[j].className == 'median_price') {
-                    spans[j].innerText = `По медиане: $${toUSD(spans[j].innerText.replace('По медиане: ', ''), exchange_rate)}`;
-                }
+                if (spans[j].innerText.includes('$')) continue;
+
+                innerTextMinPrice = `$${toUSD(spans[j].innerText, exchangeRate)}`;
+                innerTextAvgPrice = `Средняя: $${toUSD(spans[j].innerText.replace('Средняя: ', ''), exchangeRate)}`;
+                innerTextMedianPrice = `По медиане: $${toUSD(spans[j].innerText.replace('По медиане: ', ''), exchangeRate)}`;
+                rewritePrices(spans[j], innerTextMinPrice, innerTextAvgPrice, innerTextMedianPrice)
             } else if (currency == 1) {
-                if (spans[j].innerText.includes('р.')) return;
-                if (spans[j].getAttribute('data-bind') == "html: $root.format.minPrice($data.prices, 'BYN')") {
-                    spans[j].innerText = `${toBYN(spans[j].innerText, exchange_rate)} р.`;
-                }
-                if (spans[j].className == 'average_price') {
-                    spans[j].innerText = `Средняя: ${toBYN(spans[j].innerText.replace('Средняя: ', ''), exchange_rate)} р.`;
-                } else if (spans[j].className == 'median_price') {
-                    spans[j].innerText = `По медиане: ${toBYN(spans[j].innerText.replace('По медиане: ', ''), exchange_rate)} р.`;
-                }
+                if (spans[j].innerText.includes('р.')) continue;
+
+                innerTextMinPrice = `${toBYN(spans[j].innerText, exchangeRate)} р.`;
+                innerTextAvgPrice = `Средняя: ${toBYN(spans[j].innerText.replace('Средняя: ', ''), exchangeRate)} р.`;
+                innerTextMedianPrice = `По медиане: ${toBYN(spans[j].innerText.replace('По медиане: ', ''), exchangeRate)} р.`;
+                rewritePrices(spans[j], innerTextMinPrice, innerTextAvgPrice, innerTextMedianPrice)
             }
-            
         }
     }
 
@@ -121,24 +133,24 @@ function handlePricesRequests(keys, shops) {
         avgs.push(sendRequest(url)
             .then(data => {
                 let prices = []
-                let json_response = data.positions.primary
-                for (let k in json_response) {
-                    if (json_response.hasOwnProperty(k)) {
+                let jsonResponse = data.positions.primary
+                for (let k in jsonResponse) {
+                    if (jsonResponse.hasOwnProperty(k)) {
                         if (shops.length > 0) {
-                            shop_id = json_response[k].shop_id;
-                            if (shops.includes(shop_id)) {
-                                prices.push(Number(json_response[k].position_price.amount))
-                                product_id = json_response[k].product_url.split('/').pop()
+                            shopId = jsonResponse[k].shop_id;
+                            if (shops.includes(shopId)) {
+                                prices.push(Number(jsonResponse[k].position_price.amount))
+                                productId = jsonResponse[k].product_url.split('/').pop()
                             }
                         } else {
-                            prices.push(Number(json_response[k].position_price.amount))
-                            product_id = json_response[k].product_url.split('/').pop()
+                            prices.push(Number(jsonResponse[k].position_price.amount))
+                            productId = jsonResponse[k].product_url.split('/').pop()
                         }
                     }
                 }
                 return {
-                    "_id": product_id,
-                    "avg": average(prices).toFixed(2),
+                    "_id": productId,
+                    "avg": getAverageOfPrices(prices).toFixed(2),
                     "median": getMedianOfPrices(prices).toFixed(2)
                 }
             }))
@@ -177,10 +189,10 @@ function displayPrices(productsData) {
                 if (price) {
                     try {
                         _id = priceDivs[i].getElementsByTagName('a')[0].href.replace('/prices', '').split('/').pop()
-                        average_price = prettyAvgs[_id].avg;
-                        median_price = prettyAvgs[_id].median;
-                        createSpan(priceDivs[i], `Средняя: ${average_price} р.`, "average_price");
-                        createSpan(priceDivs[i], `По медиане: ${median_price} р.`, "median_price");                       
+                        averagePrice = prettyAvgs[_id].avg;
+                        medianPrice = prettyAvgs[_id].median;
+                        createSpan(priceDivs[i], `Средняя: ${averagePrice} р.`, "average_price");
+                        createSpan(priceDivs[i], `По медиане: ${medianPrice} р.`, "median_price");                       
                     } catch {}
                 }
             }
@@ -190,38 +202,28 @@ function displayPrices(productsData) {
 }
 
 
+function deleteItemFromPage(href) {
+    let mainDivs = document.getElementsByClassName('schema-product__group')
+    for (let i = 0; i < mainDivs.length; i++) {
+        if (mainDivs[i].querySelectorAll(`a[href='${href}']`).length > 0) {
+            mainDivs[i].remove()
+            break;
+        }
+    }
+}
+
+
 chrome.runtime.onMessage.addListener((message) => {
     if (message.products) {
         displayPrices(message.products)
     }
-})
-
-
-function initStorage() {
-    const items = {
-        'id1': 1,
-        'id2': 2
+    if (message.delete) {
+        deleteItemFromPage(message.delete)
     }
-    chrome.runtime.sendMessage({items})
-}
-
-function getItemsFromStorage() {
-    return chrome.runtime.sendMessage({message: 'get items'}, response => console.log('Got from background storage:', response))
-}
-
-
-const messagesFromReactAppListener = (message) => {
-    if (message.message) {
-        console.log('msg:', message.message)
-        changeCurrency(message.message)
+    if (message.currency) {
+        console.log('currency:', message.currency)
+        changeCurrency(message.currency)
     }
-}
-
-
-chrome.runtime.onMessage.addListener(messagesFromReactAppListener);
-
-
-chrome.runtime.onMessage.addListener((message) => {
     if (message.changeCurrency) {
         let priceDivs = document.getElementsByClassName('schema-product__price');
         let spans = priceDivs[0].getElementsByTagName('span');
@@ -230,24 +232,5 @@ chrome.runtime.onMessage.addListener((message) => {
         } else {
             changeCurrency(2)
         }
-    }
-});
-
-
-function deleteItemFromPage(href) {
-    let mainDivs = document.getElementsByClassName('schema-product__group')
-    console.log('Finding')
-    for (let i = 0; i < mainDivs.length; i++) {
-        if (mainDivs[i].querySelectorAll(`a[href='${href}']`).length > 0) {
-            console.log('Found')
-            mainDivs[i].remove()
-            break;
-        }
-    }
-}
-
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.delete) {
-        deleteItemFromPage(message.delete)
     }
 })

@@ -13,7 +13,7 @@ function RadioCurrency() {
 
     const sendCurrency = () => {
         const message = {
-            message: value,
+            currency: value,
         }
 
         const queryInfo = {

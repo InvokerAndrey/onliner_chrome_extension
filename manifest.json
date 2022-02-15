@@ -1,54 +1,54 @@
 {
-    "name": "True price",
-    "description": "Show onliner average price on products",
-    "version": "1.0",
-    "manifest_version": 3,
-    "permissions": [
-      "tabs",
-      "webRequest",
-      "storage",
-      "contextMenus"
-    ],
-    "host_permissions": [
-      "https://catalog.onliner.by/*"
-    ],
-    "action": {
-      "default_popup": "extension/build/index.html",
-      "default_icon": {
-        "16": "/images/roflanebalo.png",
-        "32": "/images/roflanebalo.png",
-        "48": "/images/roflanebalo.png",
-        "128": "/images/roflanebalo.png"
-      }
-    },
-    "icons": {
+  "name": "True price",
+  "description": "Show onliner average price on products",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://catalog.onliner.by/*"
+  ],
+  "action": {
+    "default_popup": "extension/build/index.html",
+    "default_icon": {
       "16": "/images/roflanebalo.png",
       "32": "/images/roflanebalo.png",
       "48": "/images/roflanebalo.png",
       "128": "/images/roflanebalo.png"
-    },
-    "content_scripts": [{
-      "run_at": "document_end",
-      "js": ["extension/src/content.js"],
-      "matches": ["https://catalog.onliner.by/*"]
-    }],
-    "background": {
-      "service_worker": "extension/src/background.js"
-    },
-    "commands": {
-      "run-message": {
-        "suggested_key": {
-          "default": "Alt+Q"
-        },
-        "description": "Changes currency"
+    }
+  },
+  "icons": {
+    "16": "/images/roflanebalo.png",
+    "32": "/images/roflanebalo.png",
+    "48": "/images/roflanebalo.png",
+    "128": "/images/roflanebalo.png"
+  },
+  "content_scripts": [{
+    "run_at": "document_end",
+    "js": ["extension/src/content.js"],
+    "matches": ["https://catalog.onliner.by/*"]
+  }],
+  "background": {
+    "service_worker": "extension/src/background.js"
+  },
+  "commands": {
+    "run-message": {
+      "suggested_key": {
+        "default": "Alt+Q"
       },
-      "_execute_action": {
-        "suggested_key": {
-          "default": "Alt+Q",
-          "windows": "Alt+Q",
-          "chromeos": "Alt+Q",
-          "linux": "Alt+Q"
-        }
+      "description": "Changes currency"
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Q",
+        "windows": "Alt+Q",
+        "chromeos": "Alt+Q",
+        "linux": "Alt+Q"
       }
     }
   }
+}

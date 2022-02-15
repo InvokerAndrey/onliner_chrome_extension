@@ -11,6 +11,7 @@ chrome.webRequest.onCompleted.addListener(response => {
         sendRequest(response.url)
             .then(data => {
                 chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+                    console.log('Sending data to content')
                     chrome.tabs.sendMessage(tabs[0].id, {products: data});
                     return true
                 });
@@ -18,21 +19,6 @@ chrome.webRequest.onCompleted.addListener(response => {
     }
     return true
 }, {urls: ["https://catalog.onliner.by/sdapi/catalog.api/search/*"]})
-
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log('Get', request)
-    if (request.message === 'get items') {
-        chrome.storage.sync.get("items", (items) => {
-            console.log('Get from storage:', items)
-            sendResponse({
-                response: items
-            })
-        })
-        return true
-    }
-    return true
-})
 
 
 chrome.commands.onCommand.addListener((command) => {
@@ -44,19 +30,16 @@ chrome.commands.onCommand.addListener((command) => {
 })
 
 
-{
-    let contextId = 0;
-
+chrome.contextMenus.remove('delete', () => {
     chrome.contextMenus.create(
         {
-            id: (++contextId).toString(),
+            id: "delete",
             type: "normal",
             title: "Delete this item from page",
             contexts: ["link"]
         }
     )
-}
-
+})
 
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
