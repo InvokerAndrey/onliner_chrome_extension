@@ -30,7 +30,7 @@ chrome.commands.onCommand.addListener((command) => {
 })
 
 
-chrome.contextMenus.remove('delete', () => {
+chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create(
         {
             id: "delete",
