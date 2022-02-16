@@ -233,4 +233,5 @@ chrome.runtime.onMessage.addListener((message) => {
             changeCurrency(2)
         }
     }
+    return true
 })

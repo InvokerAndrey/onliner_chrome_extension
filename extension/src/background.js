@@ -13,11 +13,9 @@ chrome.webRequest.onCompleted.addListener(response => {
                 chrome.tabs.query({active: true, currentWindow: true}, tabs => {
                     console.log('Sending data to content')
                     chrome.tabs.sendMessage(tabs[0].id, {products: data});
-                    return true
                 });
             })
     }
-    return true
 }, {urls: ["https://catalog.onliner.by/sdapi/catalog.api/search/*"]})
 
 
@@ -25,7 +23,6 @@ chrome.commands.onCommand.addListener((command) => {
     console.log('Command:', command)
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, {changeCurrency: true});
-        return true
     });
 })
 
@@ -46,6 +43,5 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     console.log(info)
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         chrome.tabs.sendMessage(tabs[0].id, {delete: info.linkUrl});
-        return true
     });
 })
