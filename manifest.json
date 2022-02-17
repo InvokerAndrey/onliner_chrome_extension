@@ -41,14 +41,6 @@
         "default": "Alt+Q"
       },
       "description": "Changes currency"
-    },
-    "_execute_action": {
-      "suggested_key": {
-        "default": "Alt+Q",
-        "windows": "Alt+Q",
-        "chromeos": "Alt+Q",
-        "linux": "Alt+Q"
-      }
     }
   }
 }

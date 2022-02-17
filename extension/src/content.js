@@ -215,9 +215,11 @@ function deleteItemFromPage(href) {
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.products) {
+        console.log('got products')
         displayPrices(message.products)
     }
     if (message.delete) {
+        console.log('Deleting'. message.delete)
         deleteItemFromPage(message.delete)
     }
     if (message.currency) {
@@ -225,13 +227,18 @@ chrome.runtime.onMessage.addListener((message) => {
         changeCurrency(message.currency)
     }
     if (message.changeCurrency) {
+        console.log('Change currency')
         let priceDivs = document.getElementsByClassName('schema-product__price');
         let spans = priceDivs[0].getElementsByTagName('span');
-        if (spans[0].innerText.includes('$')) {
-            changeCurrency(1)
-        } else {
-            changeCurrency(2)
+        for (span of spans) {
+            if (span.getAttribute('data-bind') == "html: $root.format.minPrice($data.prices, 'BYN')") {
+                if (span.innerText.includes('$')) {
+                    changeCurrency(1)
+                } else {
+                    changeCurrency(2)
+                }
+                break;
+            }
         }
     }
-    return true
 })
