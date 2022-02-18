@@ -219,7 +219,7 @@ chrome.runtime.onMessage.addListener((message) => {
         displayPrices(message.products)
     }
     if (message.delete) {
-        console.log('Deleting'. message.delete)
+        console.log('Deleting', message.delete)
         deleteItemFromPage(message.delete)
     }
     if (message.currency) {
