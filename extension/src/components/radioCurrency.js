@@ -7,14 +7,12 @@ function RadioCurrency() {
 
     const [value, setValue] = useState(1);
 
-    const [responseFromContent, setResponseFromContent] = useState('');
-
     const handleChange = val => setValue(val);
 
     const sendCurrency = () => {
         const message = {
             currency: value,
-        }
+        };
 
         const queryInfo = {
             active: true,
@@ -36,15 +34,11 @@ function RadioCurrency() {
              */
             chrome.tabs.sendMessage(
                 currentTabId,
-                message,
-                (response) => {
-                    setResponseFromContent(response);
-                    return true
-                });
+                message
+            );
             return true
-        });
-    };
-
+        })
+    }
 
     return (
         <ButtonGroup style={{paddingTop: '10px'}} className="btn-group-vertical">
