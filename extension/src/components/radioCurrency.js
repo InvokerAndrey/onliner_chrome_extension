@@ -39,7 +39,9 @@ function RadioCurrency() {
                 message,
                 (response) => {
                     setResponseFromContent(response);
+                    return true
                 });
+            return true
         });
     };
 

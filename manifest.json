@@ -6,7 +6,6 @@
   "permissions": [
     "tabs",
     "webRequest",
-    "storage",
     "contextMenus"
   ],
   "host_permissions": [
