@@ -198,7 +198,9 @@ function displayPrices(productsData) {
             }
             console.log('Done.')
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+            console.error(error)
+        })
 }
 
 
@@ -215,7 +217,7 @@ function deleteItemFromPage(href) {
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.products) {
-        console.log('got products')
+        console.log('got products', message.products)
         displayPrices(message.products)
     }
     if (message.delete) {

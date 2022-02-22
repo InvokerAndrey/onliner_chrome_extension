@@ -10,11 +10,8 @@ chrome.webRequest.onCompleted.addListener(response => {
     if (response.initiator == 'https://catalog.onliner.by') {
         sendRequest(response.url)
             .then(data => {
-                chrome.tabs.query({url: "https://catalog.onliner.by/*"}, tabs => {
-                    console.log('Sending data to', response.tabId, 'tab id')
-                    chrome.tabs.sendMessage(response.tabId, {products: data});
-                    return true
-                });
+                console.log('Sending data to', response.tabId, 'tab id')
+                chrome.tabs.sendMessage(response.tabId, {products: data});
             })
     }
     return true
@@ -43,9 +40,7 @@ chrome.contextMenus.removeAll(() => {
 
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
+    console.log('tab:', tab)
     console.log(info.linkUrl)
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        chrome.tabs.sendMessage(tabs[0].id, {delete: info.linkUrl});
-        return true
-    });
+    chrome.tabs.sendMessage(tab.id, {delete: info.linkUrl});
 })
